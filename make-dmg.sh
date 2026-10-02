@@ -23,6 +23,8 @@ xcodegen generate --quiet
 xcodebuild -project DiskMap.xcodeproj -scheme DiskMap -configuration Release \
   -derivedDataPath build/DerivedData build -quiet
 cp -R "build/DerivedData/Build/Products/Release/$NAME.app" "$APP"
+# Keep build copies out of Launchpad and Spotlight so only the installed app shows up.
+"/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister" -u "build/DerivedData/Build/Products/Release/$NAME.app" 2>/dev/null || true
 
 if [ -n "${DEVELOPER_ID:-}" ]; then
   echo "Signing with $DEVELOPER_ID..."
@@ -81,5 +83,6 @@ if [ -n "${DEVELOPER_ID:-}" ]; then
   fi
 fi
 
+"/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister" -u "$APP" 2>/dev/null || true
 rm -rf "$BUILD"  # drop the staging copy so Spotlight only finds the real app
 echo "Made $DMG ($(du -h "$DMG" | cut -f1))"
