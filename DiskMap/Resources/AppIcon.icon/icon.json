@@ -1,0 +1,90 @@
+{
+  "fill": {
+    "automatic-gradient": "extended-srgb:0.13000,0.15000,0.20000,1.00000"
+  },
+  "groups": [
+    {
+      "layers": [
+        {
+          "image-name": "blue.svg",
+          "name": "blue",
+          "glass": true,
+          "fill": {
+            "solid": "extended-srgb:0.16471,0.47059,0.83922,1.00000"
+          }
+        },
+        {
+          "image-name": "orange.svg",
+          "name": "orange",
+          "glass": true,
+          "fill": {
+            "solid": "extended-srgb:0.92157,0.40784,0.20392,1.00000"
+          }
+        },
+        {
+          "image-name": "green.svg",
+          "name": "green",
+          "glass": true,
+          "fill": {
+            "solid": "extended-srgb:0.10588,0.68627,0.47843,1.00000"
+          }
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
+      },
+      "translucency": {
+        "enabled": true,
+        "value": 0.4
+      }
+    },
+    {
+      "layers": [
+        {
+          "image-name": "yellow.svg",
+          "name": "yellow",
+          "glass": true,
+          "fill": {
+            "solid": "extended-srgb:0.92941,0.63137,0.00000,1.00000"
+          }
+        },
+        {
+          "image-name": "pink.svg",
+          "name": "pink",
+          "glass": true,
+          "fill": {
+            "solid": "extended-srgb:0.90980,0.48235,0.64314,1.00000"
+          }
+        },
+        {
+          "image-name": "violet.svg",
+          "name": "violet",
+          "glass": true,
+          "fill": {
+            "solid": "extended-srgb:0.48235,0.41961,0.87843,1.00000"
+          }
+        },
+        {
+          "image-name": "red.svg",
+          "name": "red",
+          "glass": true,
+          "fill": {
+            "solid": "extended-srgb:0.89020,0.28627,0.28235,1.00000"
+          }
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
+      },
+      "translucency": {
+        "enabled": true,
+        "value": 0.4
+      }
+    }
+  ],
+  "supported-platforms": {
+    "squares": "shared"
+  }
+}
