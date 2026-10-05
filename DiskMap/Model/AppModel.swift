@@ -20,6 +20,8 @@ final class AppModel {
     // MARK: What's on screen
 
     private(set) var results: [String: ScanResult] = [:]
+    /// Sizes from saved scans that haven't been loaded yet, keyed by path.
+    private var savedSizes: [String: Int64] = [:]
     private(set) var current: FileNode?
     private var history: [FileNode] = []
     var hovered: FileNode?
@@ -60,6 +62,7 @@ final class AppModel {
             all += saved
         }
         locations = all
+        for location in all { savedSizes[location.path] = cache.savedSize(rootPath: location.path) }
         checkFullDiskAccess()
         selectedLocationID = all.first?.id
         showSelectedLocation()
@@ -71,6 +74,7 @@ final class AppModel {
         let location = Location.custom(url)
         if !locations.contains(where: { $0.id == location.id }) {
             locations.append(location)
+            savedSizes[location.path] = cache.savedSize(rootPath: location.path)
             saveCustomLocations()
         }
         select(location.id)
@@ -100,6 +104,12 @@ final class AppModel {
     }
 
     var currentResult: ScanResult? { selectedLocation.flatMap { results[$0.path] } }
+
+    /// How much the location held when it was last scanned, or nil if it never has been.
+    func scannedSize(of location: Location) -> Int64? {
+        results[location.path]?.root.size ?? savedSizes[location.path]
+    }
+
     var isScanningSelected: Bool { progress != nil && scanningPath == selectedLocation?.path }
 
     // MARK: - Scanning
