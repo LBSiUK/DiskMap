@@ -10,6 +10,8 @@ struct Tile {
     let group: Int
     /// Folders big enough to hold children get a strip at the top for their name.
     let hasHeader: Bool
+    /// False when the box's children fill it edge to edge and would paint over its name.
+    let showsLabel: Bool
 }
 
 enum TreemapTiles {
@@ -41,7 +43,8 @@ enum TreemapTiles {
                            width: rect.width - padding * 2,
                            height: rect.height - padding * 2 - (showsHeader ? headerHeight : 0))
         let nests = node.isFolder && depth + 1 < maxDepth && inner.width > 20 && inner.height > 20
-        tiles.append(Tile(node: node, rect: rect, depth: depth, group: group, hasHeader: showsHeader && nests))
+        tiles.append(Tile(node: node, rect: rect, depth: depth, group: group,
+                          hasHeader: showsHeader && nests, showsLabel: showsHeader || !nests))
 
         guard nests else { return }
         let children = node.children.filter { $0.size > 0 }
