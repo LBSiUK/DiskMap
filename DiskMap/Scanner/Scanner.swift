@@ -47,12 +47,14 @@ final class Scanner: @unchecked Sendable {
         }
         rootDevice = st.st_dev
 
-        let reporter = Task {
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .milliseconds(100))
-                onProgress(currentProgress)
-            }
-        }
+        // The walk keeps every thread in Swift's shared pool (and the matching GCD pool) busy with
+        // file system calls, so a sleeping Task or a global-queue timer would barely get a turn
+        // until the scan was nearly over. A queue of its own always gets a thread.
+        let queue = DispatchQueue(label: "uk.lbsi.DiskMap.scan-progress", qos: .userInitiated)
+        let reporter = DispatchSource.makeTimerSource(queue: queue)
+        reporter.schedule(deadline: .now() + .milliseconds(100), repeating: .milliseconds(100))
+        reporter.setEventHandler { [self] in onProgress(currentProgress) }
+        reporter.resume()
         defer { reporter.cancel() }
 
         let name = rootPath == "/" ? "/" : (rootPath as NSString).lastPathComponent
