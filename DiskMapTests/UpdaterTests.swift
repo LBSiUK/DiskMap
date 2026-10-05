@@ -15,6 +15,13 @@ struct VersionTests {
 }
 
 struct ReleaseTests {
+    /// A settings store kept in a temporary file, so test runs leave nothing behind in
+    /// ~/Library/Preferences (a plain suite name would create a new file there every run).
+    private func scratchDefaults() throws -> UserDefaults {
+        let file = FileManager.default.temporaryDirectory.appendingPathComponent("UpdaterTests-\(UUID().uuidString)")
+        return try #require(UserDefaults(suiteName: file.path))
+    }
+
     let json = """
     {
       "tag_name": "v0.2.0",
@@ -39,7 +46,7 @@ struct ReleaseTests {
     @MainActor @Test func checkFindsNewerReleaseFromFeed() async throws {
         let feed = FileManager.default.temporaryDirectory.appendingPathComponent("feed-\(UUID().uuidString).json")
         try Data(json.utf8).write(to: feed)
-        let defaults = try #require(UserDefaults(suiteName: "UpdaterTests-\(UUID().uuidString)"))
+        let defaults = try scratchDefaults()
         defaults.set(feed.absoluteString, forKey: "DiskMapUpdateFeed")
 
         let older = Updater(defaults: defaults, currentVersion: "0.1.0")
@@ -53,7 +60,7 @@ struct ReleaseTests {
     }
 
     @MainActor @Test func unreachableFeedFailsOnlyWhenNotQuiet() async throws {
-        let defaults = try #require(UserDefaults(suiteName: "UpdaterTests-\(UUID().uuidString)"))
+        let defaults = try scratchDefaults()
         defaults.set("file:///definitely/missing.json", forKey: "DiskMapUpdateFeed")
         let updater = Updater(defaults: defaults, currentVersion: "0.1.0")
         await updater.check(quietly: true)
