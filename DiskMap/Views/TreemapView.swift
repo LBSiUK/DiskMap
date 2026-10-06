@@ -70,7 +70,7 @@ struct TreemapView: View {
             inner.stroke(lines, with: .color(palette.ink.opacity(0.12)), lineWidth: 2)
         }
 
-        guard tile.rect.width > 44, tile.rect.height > 18 else { return }
+        guard tile.showsLabel, tile.rect.width > 44, tile.rect.height > 18 else { return }
         let name = model.name(of: tile.node)
         let size = tile.node.size.bytes
         let room = Int((tile.rect.width - 10) / 6.4)

@@ -36,6 +36,13 @@ struct ScanCacheTests {
 
     @Test func missingCacheIsNil() {
         #expect(cache.load(rootPath: "/nowhere") == nil)
+        #expect(cache.savedSize(rootPath: "/nowhere") == nil)
+    }
+
+    @Test func savedSizeComesFromTheHeader() throws {
+        try cache.save(sample())
+        #expect(cache.savedSize(rootPath: "/System/Volumes/Data") == 3_100)
+        #expect(cache.savedSize(rootPath: "/System/Volumes") == nil)
     }
 
     @Test func otherVersionOrDamagedFileIsIgnored() throws {

@@ -47,6 +47,23 @@ struct TreemapTilesTests {
         #expect(TreemapTiles.hit(tiles, at: CGPoint(x: -5, y: -5)) == nil)
     }
 
+    @Test func foldersFilledByTheirChildrenHideTheirName() {
+        // Too short for a name strip but tall enough to nest, so the children cover the whole box.
+        let tiles = TreemapTiles.layout(tree(), in: CGRect(x: 0, y: 0, width: 800, height: 30))
+        let a = tiles.first { $0.node.name == "a" }!
+        #expect(!a.hasHeader)
+        #expect(tiles.contains { $0.node.parent === a.node })
+        #expect(!a.showsLabel)
+        #expect(tiles.filter { $0.node.parent === a.node }.allSatisfy { $0.showsLabel })
+    }
+
+    @Test func foldersWithANameStripKeepTheirName() {
+        let tiles = TreemapTiles.layout(tree(), in: bounds)
+        let a = tiles.first { $0.node.name == "a" }!
+        #expect(a.hasHeader)
+        #expect(a.showsLabel)
+    }
+
     @Test func tinyBoundsGiveNoTiles() {
         #expect(TreemapTiles.layout(tree(), in: CGRect(x: 0, y: 0, width: 2, height: 2)).isEmpty)
     }

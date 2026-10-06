@@ -10,7 +10,7 @@ struct SidebarView: View {
         List(selection: selection) {
             Section("Locations") {
                 ForEach(model.locations) { location in
-                    LocationRow(location: location, result: model.results[location.path])
+                    LocationRow(location: location, scannedSize: model.scannedSize(of: location))
                         .tag(location.id)
                         .contextMenu {
                             if location.isCustom {
@@ -34,7 +34,7 @@ struct SidebarView: View {
 
 private struct LocationRow: View {
     let location: Location
-    let result: ScanResult?
+    let scannedSize: Int64?
 
     var body: some View {
         let volume = VolumeStats(path: location.path)
@@ -46,8 +46,8 @@ private struct LocationRow: View {
                         .progressViewStyle(.linear)
                         .controlSize(.mini)
                     Text("\(volume.available.bytes) free of \(volume.total.bytes)")
-                } else if let result {
-                    Text(result.root.size.bytes)
+                } else if let scannedSize {
+                    Text(scannedSize.bytes)
                 } else {
                     Text("Not scanned yet")
                 }

@@ -42,6 +42,21 @@ struct ScanCache {
         return ScanResult(root: root, unreadableCount: Int(unreadable), date: Date(timeIntervalSince1970: time))
     }
 
+    /// The total size recorded in a saved scan, read from the start of the file without loading
+    /// the whole tree, so the sidebar can show it before the location is opened.
+    func savedSize(rootPath: String) -> Int64? {
+        guard let handle = try? FileHandle(forReadingFrom: fileURL(for: rootPath)) else { return nil }
+        defer { try? handle.close() }
+        // Header, root path, then the root node's kind and size.
+        let length = 4 + 4 + 8 + 4 + 4 + rootPath.utf8.count + 1 + 8
+        guard let data = try? handle.read(upToCount: length) else { return nil }
+        var r = Reader(data: data)
+        guard r.u32() == Self.magic, r.u32() == Self.formatVersion, r.f64() != nil, r.u32() != nil,
+              r.string() == rootPath, r.u8() != nil, let size = r.i64()
+        else { return nil }
+        return size
+    }
+
     // MARK: - Encoding
 
     private struct Writer {
