@@ -10,7 +10,9 @@ struct DiskMapApp: App {
             ContentView()
                 .environment(model)
                 .environment(updater)
-                .frame(minWidth: 960, minHeight: 600)
+                // No minWidth here. The split view works out its own, and a smaller one here
+                // makes macOS 27 redo the layout forever until the app crashes.
+                .frame(minHeight: 600)
                 .task { updater.checkOnLaunchIfEnabled() }
         }
         .defaultSize(width: 1280, height: 820)

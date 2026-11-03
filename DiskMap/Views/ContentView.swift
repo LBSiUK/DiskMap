@@ -91,7 +91,7 @@ struct ContentView: View {
                 HoverBar()
             }
         }
-        .frame(minWidth: 520, minHeight: 420)
+        .frame(minWidth: 300, minHeight: 420)
     }
 
     @ToolbarContentBuilder private var toolbar: some ToolbarContent {
